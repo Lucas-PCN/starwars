@@ -4,6 +4,7 @@ import AppContext from './AppContext';
 
 function Provider({ children }) {
   const [planetsInfo, setPlanetsInfo] = useState([]);
+  const [name, setName] = useState('');
 
   const apiRequest = async () => {
     const endpoint = 'https://swapi-trybe.herokuapp.com/api/planets/';
@@ -16,15 +17,27 @@ function Provider({ children }) {
     apiRequest();
   }, []);
 
+  const handleName = ({ target: { value } }) => {
+    setName(value);
+  };
+
+  const contextValue = {
+    planetsInfo,
+    filterByName: {
+      name,
+    },
+    handleName,
+  };
+
   return (
-    <AppContext.Provider value={ planetsInfo }>
+    <AppContext.Provider value={ contextValue }>
       { children }
     </AppContext.Provider>
   );
 }
 
 Provider.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 export default Provider;
