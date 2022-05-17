@@ -66,6 +66,30 @@ function Provider({ children }) {
     }
   };
 
+  const handleDeleteFilter = (removedFilter) => {
+    const newFilters = filtersUsed.filter((filter) => filter !== removedFilter);
+    setFiltersUsed(newFilters);
+    setOptionsValue(optionsValue.concat(removedFilter.column));
+    let planets = planetsInfo;
+    newFilters.forEach(({ column, comparison, valueCompare }) => {
+      planets = planetsInfo.filter((planet) => {
+        if (comparison === 'maior que') {
+          return Number(planet[column]) > Number(valueCompare);
+        } if (comparison === 'menor que') {
+          return Number(planet[column]) < Number(valueCompare);
+        }
+        return Number(planet[column]) === Number(valueCompare);
+      });
+    });
+    setPlanetsFiltered(planets);
+  };
+
+  const removeAllFilters = () => {
+    setFiltersUsed([]);
+    setOptionsValue(OPTIONS);
+    setPlanetsFiltered(planetsInfo);
+  };
+
   const contextValue = {
     planetsFiltered,
     filterByName: {
@@ -73,6 +97,8 @@ function Provider({ children }) {
     },
     handleName,
     handleNumber,
+    handleDeleteFilter,
+    removeAllFilters,
     filtersUsed,
     optionsValue,
   };

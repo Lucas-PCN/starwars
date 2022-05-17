@@ -6,7 +6,7 @@ function NumberFilter() {
   const [comparison, setcomparison] = useState('maior que');
   const [valueCompare, setValueCompare] = useState(0);
 
-  const { handleNumber, optionsValue } = useContext(AppContext);
+  const { handleNumber, optionsValue, removeAllFilters } = useContext(AppContext);
 
   const handleChangeGeneric = ({ target: { name, value } }) => {
     if (name === 'column') {
@@ -68,6 +68,14 @@ function NumberFilter() {
         } }
       >
         Filtrar
+      </button>
+      {' '}
+      <button
+        type="button"
+        data-testid="button-remove-filters"
+        onClick={ removeAllFilters }
+      >
+        Remover todos os filtros
       </button>
     </div>
   );
