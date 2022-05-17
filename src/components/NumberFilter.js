@@ -6,7 +6,9 @@ function NumberFilter() {
   const [comparison, setcomparison] = useState('maior que');
   const [valueCompare, setValueCompare] = useState(0);
 
-  const { handleNumber, optionsValue, removeAllFilters } = useContext(AppContext);
+  const { handleNumber, optionsValue, removeAllFilters,
+    columnSort, setColumnSort, sortDirection,
+    setSortDirection, sortData } = useContext(AppContext);
 
   const handleChangeGeneric = ({ target: { name, value } }) => {
     if (name === 'column') {
@@ -77,6 +79,55 @@ function NumberFilter() {
       >
         Remover todos os filtros
       </button>
+      {' '}
+      <label htmlFor="column-sort">
+        Ordenar:
+        <select
+          name="column-sort"
+          id="column-sort"
+          data-testid="column-sort"
+          value={ columnSort }
+          onChange={ (e) => setColumnSort(e.target.value) }
+        >
+          <option value="population">population</option>
+          <option value="orbital_period">orbital_period</option>
+          <option value="diameter">diameter</option>
+          <option value="rotation_period">rotation_period</option>
+          <option value="surface_water">surface_water</option>
+        </select>
+      </label>
+      <div
+        onChange={ (e) => setSortDirection(e.target.value) }
+        value={ sortDirection }
+      >
+        <label htmlFor="ASC">
+          ASC
+          <input
+            type="radio"
+            id="ASC"
+            name="sort"
+            value="ASC"
+            data-testid="column-sort-input-asc"
+          />
+        </label>
+        <label htmlFor="DESC">
+          DESC
+          <input
+            type="radio"
+            id="DESC"
+            name="sort"
+            value="DESC"
+            data-testid="column-sort-input-desc"
+          />
+        </label>
+        <button
+          type="button"
+          data-testid="column-sort-button"
+          onClick={ sortData }
+        >
+          Ordenar
+        </button>
+      </div>
     </div>
   );
 }

@@ -16,18 +16,39 @@ function Provider({ children }) {
   const [planetName, setPlanetName] = useState('');
   const [filtersUsed, setFiltersUsed] = useState([]);
   const [optionsValue, setOptionsValue] = useState(OPTIONS);
+  const [columnSort, setColumnSort] = useState('population');
+  const [sortDirection, setSortDirection] = useState('');
+  const [order, setOrder] = useState({ column: '', sort: '' });
 
   const apiRequest = async () => {
     const endpoint = 'https://swapi-trybe.herokuapp.com/api/planets/';
     const response = await fetch(endpoint);
     const data = await response.json();
-    setPlanetsInfo(data.results);
-    setPlanetsFiltered(data.results);
+    const dataSorted = data.results.sort((a, b) => a.name.localeCompare(b.name));
+    setPlanetsInfo(dataSorted);
+    setPlanetsFiltered(dataSorted);
   };
 
   useEffect(() => {
     apiRequest();
   }, []);
+
+  useEffect(() => {
+    let sort = planetsFiltered;
+    if (order.sort === 'ASC') {
+      sort = sort.sort((a, b) => a[order.column] - b[order.column]);
+      const valid = sort.filter((planet) => planet[order.column] !== 'unknown');
+      const notValid = sort
+        .filter((planet) => planet[order.column] === 'unknown');
+      setPlanetsFiltered([...notValid, ...valid]);
+    } else {
+      sort = sort.sort((a, b) => b[order.column] - a[order.column]);
+      const valid = sort.filter((planet) => planet[order.column] !== 'unknown');
+      const notValid = sort
+        .filter((planet) => planet[order.column] === 'unknown');
+      setPlanetsFiltered([...valid, ...notValid]);
+    }
+  }, [order]);
 
   const handleName = ({ target: { value } }) => {
     setPlanetName(value);
@@ -90,6 +111,11 @@ function Provider({ children }) {
     setPlanetsFiltered(planetsInfo);
   };
 
+  const sortData = () => {
+    const newOrder = { column: columnSort, sort: sortDirection };
+    setOrder(newOrder);
+  };
+
   const contextValue = {
     planetsFiltered,
     filterByName: {
@@ -101,6 +127,11 @@ function Provider({ children }) {
     removeAllFilters,
     filtersUsed,
     optionsValue,
+    columnSort,
+    setColumnSort,
+    sortDirection,
+    setSortDirection,
+    sortData,
   };
 
   return (
